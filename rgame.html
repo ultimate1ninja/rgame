@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TESTING: Alien Ship Infiltration Game</title>
+    <title>Alien Ship Heist - Working Version</title>
     <style>
         * {
             margin: 0;
@@ -13,79 +13,15 @@
         }
         
         body {
-            background: #0a0a1a;
+            overflow: hidden;
+            background: #000;
             color: #e0e0e0;
-            padding: 20px;
-            line-height: 1.6;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding: 20px;
-            background: linear-gradient(135deg, rgba(10, 25, 50, 0.9), rgba(5, 15, 35, 0.95));
-            border-radius: 12px;
-            border: 1px solid rgba(0, 200, 255, 0.3);
-        }
-        
-        h1 {
-            color: #18ffff;
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            text-shadow: 0 0 10px rgba(24, 255, 255, 0.5);
-        }
-        
-        .subtitle {
-            color: #4fc3f7;
-            font-size: 1.2em;
-        }
-        
-        .test-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 30px;
-            margin-bottom: 30px;
-        }
-        
-        .game-section {
-            background: rgba(5, 15, 35, 0.9);
-            border-radius: 12px;
-            padding: 20px;
-            border: 1px solid rgba(0, 200, 255, 0.3);
-        }
-        
-        .controls-section {
-            background: rgba(15, 25, 45, 0.9);
-            border-radius: 12px;
-            padding: 20px;
-            border: 1px solid rgba(0, 255, 200, 0.3);
-        }
-        
-        h2 {
-            color: #00ffaa;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid rgba(0, 255, 170, 0.3);
-        }
-        
-        h3 {
-            color: #ffd600;
-            margin: 15px 0 10px 0;
         }
         
         #gameContainer {
-            width: 100%;
-            height: 600px;
             position: relative;
-            border-radius: 8px;
-            overflow: hidden;
-            border: 2px solid #00aaff;
-            margin-bottom: 20px;
+            width: 100vw;
+            height: 100vh;
         }
         
         #gameCanvas {
@@ -94,939 +30,1086 @@
             display: block;
         }
         
-        .button-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin: 15px 0;
-        }
-        
-        .test-btn {
-            background: linear-gradient(135deg, #0066cc, #004499);
-            color: white;
-            border: none;
-            padding: 12px 15px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 1em;
-            text-align: center;
-            transition: all 0.3s;
-            border: 1px solid rgba(0, 150, 255, 0.5);
-        }
-        
-        .test-btn:hover {
-            background: linear-gradient(135deg, #0088ff, #0066cc);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 136, 255, 0.4);
-        }
-        
-        .test-btn:active {
-            transform: translateY(1px);
-        }
-        
-        .danger-btn {
-            background: linear-gradient(135deg, #cc3300, #992200);
-        }
-        
-        .danger-btn:hover {
-            background: linear-gradient(135deg, #ff4400, #cc3300);
-        }
-        
-        .success-btn {
-            background: linear-gradient(135deg, #00cc66, #009944);
-        }
-        
-        .success-btn:hover {
-            background: linear-gradient(135deg, #00ff88, #00cc66);
-        }
-        
-        .control-item {
-            margin: 10px 0;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 6px;
+        #hud {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            z-index: 100;
+            pointer-events: none;
         }
         
-        .key {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-family: 'Courier New', monospace;
-            min-width: 40px;
-            text-align: center;
-        }
-        
-        .log-section {
-            background: rgba(0, 10, 20, 0.9);
-            border-radius: 12px;
-            padding: 20px;
-            margin-top: 30px;
-            border: 1px solid rgba(255, 200, 0, 0.3);
-        }
-        
-        #debugLog {
-            height: 200px;
-            overflow-y: auto;
-            background: rgba(0, 0, 0, 0.7);
+        .hud-panel {
+            background: rgba(10, 20, 40, 0.85);
             padding: 15px;
-            border-radius: 6px;
-            font-family: 'Courier New', monospace;
-            font-size: 0.9em;
-            margin-top: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            border: 1px solid rgba(0, 150, 255, 0.5);
+            min-width: 250px;
+            backdrop-filter: blur(5px);
         }
         
-        .log-entry {
-            margin-bottom: 8px;
-            padding: 5px;
-            border-left: 3px solid #00aaff;
-            animation: fadeIn 0.3s;
+        .hud-title {
+            color: #4fc3f7;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(79, 195, 247, 0.3);
+            padding-bottom: 5px;
         }
         
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-5px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .status-indicator {
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            margin-right: 8px;
-        }
-        
-        .status-online {
-            background: #00ff00;
-            box-shadow: 0 0 10px #00ff00;
-        }
-        
-        .status-offline {
-            background: #ff0000;
-            box-shadow: 0 0 10px #ff0000;
-        }
-        
-        .system-check {
-            margin: 15px 0;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 6px;
-        }
-        
-        .check-item {
+        .stat-row {
             display: flex;
             justify-content: space-between;
             margin: 8px 0;
         }
         
-        .check-pass {
-            color: #00ff00;
+        .stat-label {
+            color: #b0bec5;
         }
         
-        .check-fail {
-            color: #ff3333;
+        .stat-value {
+            color: #ffffff;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
         }
         
-        .warning-box {
-            background: rgba(255, 153, 0, 0.1);
-            border: 1px solid rgba(255, 153, 0, 0.3);
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 6px;
+            margin: 5px 0 10px 0;
+            overflow: hidden;
         }
         
-        .info-box {
-            background: rgba(0, 153, 255, 0.1);
-            border: 1px solid rgba(0, 153, 255, 0.3);
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
+        .progress-fill {
+            height: 100%;
+            border-radius: 6px;
+            transition: width 0.3s;
         }
         
-        .test-step {
-            margin: 10px 0;
-            padding-left: 20px;
-            position: relative;
-        }
+        #health-bar { background: linear-gradient(90deg, #ff0000, #ffff00, #00ff00); }
+        #energy-bar { background: linear-gradient(90deg, #0066cc, #00ccff); }
+        #integrity-bar { background: linear-gradient(90deg, #ff6f00, #ffca28); }
         
-        .test-step:before {
-            content: "▶";
+        #crosshair {
             position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            z-index: 90;
+        }
+        
+        .crosshair-dot {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #00ffff;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 5px #00ffff;
+        }
+        
+        #message-overlay {
+            position: absolute;
+            top: 0;
             left: 0;
-            color: #00ffaa;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 5, 15, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+        }
+        
+        .message-box {
+            background: linear-gradient(135deg, rgba(10, 25, 50, 0.95), rgba(5, 15, 35, 0.98));
+            border-radius: 15px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            border: 2px solid rgba(0, 200, 255, 0.5);
+            text-align: center;
+            box-shadow: 0 0 50px rgba(0, 100, 255, 0.5);
+        }
+        
+        .message-title {
+            color: #18ffff;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(24, 255, 255, 0.5);
+        }
+        
+        .message-text {
+            color: #b0bec5;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #0066cc, #004499);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s;
+            border: 1px solid rgba(0, 150, 255, 0.5);
+        }
+        
+        .btn:hover {
+            background: linear-gradient(135deg, #0088ff, #0066cc);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 136, 255, 0.4);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #00c853, #009624);
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #00e676, #00c853);
+        }
+        
+        #controls-help {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(10, 20, 40, 0.85);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 150, 255, 0.5);
+            max-width: 300px;
+        }
+        
+        .control-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+            padding: 3px 0;
+        }
+        
+        .key {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        #loading {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 300;
+        }
+        
+        .loading-bar {
+            width: 300px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            margin-top: 20px;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        
+        .loading-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #0066cc, #00ccff);
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        #radar {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 150px;
+            height: 150px;
+            background: rgba(10, 20, 40, 0.85);
+            border-radius: 50%;
+            border: 2px solid rgba(0, 200, 255, 0.5);
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>ALIEN SHIP INFILTRATION GAME - TEST SUITE</h1>
-            <div class="subtitle">Complete Testing Environment with Debug Tools</div>
-        </header>
+    <div id="gameContainer">
+        <canvas id="gameCanvas"></canvas>
         
-        <div class="test-grid">
-            <div class="game-section">
-                <h2>GAME VIEWPORT</h2>
-                <div id="gameContainer">
-                    <canvas id="gameCanvas"></canvas>
-                    <div id="gameOverlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;"></div>
+        <!-- HUD -->
+        <div id="hud">
+            <div class="hud-panel">
+                <div class="hud-title">VITAL SIGNS</div>
+                <div class="stat-row">
+                    <div class="stat-label">Health:</div>
+                    <div id="health-value" class="stat-value">100%</div>
+                </div>
+                <div class="progress-bar">
+                    <div id="health-bar" class="progress-fill" style="width: 100%"></div>
                 </div>
                 
-                <h3>Game Status</h3>
-                <div class="button-grid">
-                    <button class="test-btn success-btn" onclick="startGameTest()">START GAME</button>
-                    <button class="test-btn danger-btn" onclick="resetGameTest()">RESET GAME</button>
-                    <button class="test-btn" onclick="simulateCombatTest()">SIMULATE COMBAT</button>
-                    <button class="test-btn" onclick="completeLevelTest()">COMPLETE LEVEL</button>
-                    <button class="test-btn" onclick="damagePlayerTest()">DAMAGE PLAYER (-20 HP)</button>
-                    <button class="test-btn success-btn" onclick="healPlayerTest()">HEAL PLAYER (+30 HP)</button>
-                    <button class="test-btn" onclick="toggleStealthTest()">TOGGLE STEALTH</button>
-                    <button class="test-btn" onclick="reloadWeaponTest()">RELOAD WEAPON</button>
+                <div class="stat-row">
+                    <div class="stat-label">Energy:</div>
+                    <div id="energy-value" class="stat-value">100%</div>
+                </div>
+                <div class="progress-bar">
+                    <div id="energy-bar" class="progress-fill" style="width: 100%"></div>
                 </div>
                 
-                <h3>Performance Monitor</h3>
-                <div class="system-check">
-                    <div class="check-item">
-                        <span>FPS:</span>
-                        <span id="fpsCounter" class="check-pass">60</span>
-                    </div>
-                    <div class="check-item">
-                        <span>Memory:</span>
-                        <span id="memoryCounter" class="check-pass">Normal</span>
-                    </div>
-                    <div class="check-item">
-                        <span>Render Time:</span>
-                        <span id="renderTime" class="check-pass">0ms</span>
-                    </div>
+                <div class="stat-row">
+                    <div class="stat-label">Stealth:</div>
+                    <div id="stealth-value" class="stat-value">ACTIVE</div>
                 </div>
             </div>
             
-            <div class="controls-section">
-                <h2>TESTING CONTROLS</h2>
-                
-                <div class="info-box">
-                    <strong>TESTING INSTRUCTIONS:</strong>
-                    <div class="test-step">1. Click START GAME to begin</div>
-                    <div class="test-step">2. Test controls below</div>
-                    <div class="test-step">3. Check Debug Log for results</div>
-                    <div class="test-step">4. Use SIMULATE buttons to test features</div>
+            <div class="hud-panel">
+                <div class="hud-title">MISSION STATUS</div>
+                <div class="stat-row">
+                    <div class="stat-label">Aliens:</div>
+                    <div id="alien-count" class="stat-value">8</div>
                 </div>
                 
-                <h3>Keyboard Controls</h3>
-                <div class="control-item">
-                    <span>Movement:</span>
-                    <span class="key">WASD</span>
-                </div>
-                <div class="control-item">
-                    <span>Look Around:</span>
-                    <span class="key">MOUSE</span>
-                </div>
-                <div class="control-item">
-                    <span>Fire Weapon:</span>
-                    <span class="key">LMB</span>
-                </div>
-                <div class="control-item">
-                    <span>Interact:</span>
-                    <span class="key">E</span>
-                </div>
-                <div class="control-item">
-                    <span>Stealth Toggle:</span>
-                    <span class="key">SHIFT</span>
-                </div>
-                <div class="control-item">
-                    <span>Jump:</span>
-                    <span class="key">SPACE</span>
-                </div>
-                <div class="control-item">
-                    <span>Reload:</span>
-                    <span class="key">R</span>
+                <div class="stat-row">
+                    <div class="stat-label">Distance:</div>
+                    <div id="distance-value" class="stat-value">200m</div>
                 </div>
                 
-                <h3>Quick Test Actions</h3>
-                <div class="button-grid">
-                    <button class="test-btn" onclick="addAlienTest()">ADD ALIEN</button>
-                    <button class="test-btn" onclick="removeAlienTest()">REMOVE ALIEN</button>
-                    <button class="test-btn" onclick="fireWeaponTest()">FIRE WEAPON</button>
-                    <button class="test-btn" onclick="interactTest()">INTERACT (E)</button>
-                    <button class="test-btn" onclick="nextLevelTest()">NEXT LEVEL</button>
-                    <button class="test-btn danger-btn" onclick="failMissionTest()">FAIL MISSION</button>
+                <div class="stat-row">
+                    <div class="stat-label">Integrity:</div>
+                    <div id="integrity-value" class="stat-value">85%</div>
+                </div>
+                <div class="progress-bar">
+                    <div id="integrity-bar" class="progress-fill" style="width: 85%"></div>
                 </div>
                 
-                <div class="warning-box">
-                    <strong>Note:</strong> Click on the 3D canvas first to enable mouse controls. Some browsers may require user interaction before audio plays.
+                <div class="stat-row">
+                    <div class="stat-label">Ammo:</div>
+                    <div id="ammo-value" class="stat-value">24/24</div>
                 </div>
             </div>
         </div>
         
-        <div class="log-section">
-            <h2>DEBUG LOG <span id="logCount">(0 entries)</span></h2>
-            <div id="debugLog"></div>
-            <div style="margin-top: 10px;">
-                <button class="test-btn" onclick="clearLog()" style="margin-right: 10px;">CLEAR LOG</button>
-                <button class="test-btn" onclick="exportLog()">EXPORT LOG</button>
-                <button class="test-btn" onclick="runAllTests()">RUN ALL TESTS</button>
+        <!-- Crosshair -->
+        <div id="crosshair">
+            <div class="crosshair-dot"></div>
+        </div>
+        
+        <!-- Controls Help -->
+        <div id="controls-help">
+            <div style="color: #4fc3f7; margin-bottom: 10px;">CONTROLS:</div>
+            <div class="control-item">
+                <span>Move:</span>
+                <span class="key">WASD</span>
+            </div>
+            <div class="control-item">
+                <span>Look:</span>
+                <span class="key">MOUSE</span>
+            </div>
+            <div class="control-item">
+                <span>Fire:</span>
+                <span class="key">CLICK</span>
+            </div>
+            <div class="control-item">
+                <span>Interact:</span>
+                <span class="key">E</span>
+            </div>
+            <div class="control-item">
+                <span>Stealth:</span>
+                <span class="key">SHIFT</span>
+            </div>
+            <div class="control-item">
+                <span>Reload:</span>
+                <span class="key">R</span>
+            </div>
+        </div>
+        
+        <!-- Radar -->
+        <div id="radar"></div>
+        
+        <!-- Loading Screen -->
+        <div id="loading">
+            <div style="color: #18ffff; font-size: 2em; margin-bottom: 20px;">LOADING MISSION</div>
+            <div class="loading-bar">
+                <div id="loading-fill" class="loading-fill"></div>
+            </div>
+            <div id="loading-text" style="margin-top: 15px; color: #b0bec5;">Initializing systems...</div>
+        </div>
+        
+        <!-- Message Overlay -->
+        <div id="message-overlay" class="hidden">
+            <div class="message-box">
+                <div id="message-title" class="message-title">ALIEN SHIP HEIST</div>
+                <div id="message-text" class="message-text">
+                    Your ship was destroyed. Stranded in deep space, you must infiltrate the alien battleship, 
+                    fight through multiple levels, steal their ship, and return home.
+                    <br><br>
+                    <strong>Mission:</strong> Infiltrate, eliminate, commandeer, escape.
+                    <br><br>
+                    <strong>Survival probability:</strong> 23%
+                </div>
+                <button id="start-btn" class="btn btn-primary">BEGIN MISSION</button>
+                <button id="continue-btn" class="btn hidden">CONTINUE</button>
+                <button id="next-btn" class="btn btn-primary hidden">NEXT LEVEL</button>
             </div>
         </div>
     </div>
 
-    <!-- Three.js Library -->
+    <!-- Three.js only - no complex dependencies -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     
     <script>
-        // ============== TESTING FRAMEWORK ==============
-        let debugLog = [];
-        let gameInstance = null;
-        let frameCount = 0;
-        let lastTime = performance.now();
-        let fps = 60;
-        
-        // Log system
-        function addLog(message, type = 'info') {
-            const timestamp = new Date().toLocaleTimeString();
-            const logEntry = {
-                time: timestamp,
-                message: message,
-                type: type
-            };
-            
-            debugLog.push(logEntry);
-            
-            // Update log display
-            const logDiv = document.getElementById('debugLog');
-            const entryDiv = document.createElement('div');
-            entryDiv.className = 'log-entry';
-            entryDiv.style.borderLeftColor = type === 'error' ? '#ff3333' : 
-                                            type === 'success' ? '#00ff00' : 
-                                            type === 'warning' ? '#ff9900' : '#00aaff';
-            entryDiv.innerHTML = `<strong>[${timestamp}]</strong> ${message}`;
-            logDiv.appendChild(entryDiv);
-            
-            // Auto-scroll
-            logDiv.scrollTop = logDiv.scrollHeight;
-            
-            // Update counter
-            document.getElementById('logCount').textContent = `(${debugLog.length} entries)`;
-            
-            // Console output
-            console.log(`[${type.toUpperCase()}] ${message}`);
-        }
-        
-        // Clear log
-        function clearLog() {
-            debugLog = [];
-            document.getElementById('debugLog').innerHTML = '';
-            document.getElementById('logCount').textContent = '(0 entries)';
-            addLog('Debug log cleared', 'info');
-        }
-        
-        // Export log
-        function exportLog() {
-            const logText = debugLog.map(entry => `[${entry.time}] ${entry.message}`).join('\n');
-            const blob = new Blob([logText], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `alien_game_test_${new Date().toISOString().slice(0,10)}.log`;
-            a.click();
-            addLog('Log exported', 'success');
-        }
-        
-        // Run all tests
-        function runAllTests() {
-            addLog('=== RUNNING COMPREHENSIVE TEST SUITE ===', 'warning');
-            
-            setTimeout(() => startGameTest(), 500);
-            setTimeout(() => simulateCombatTest(), 1500);
-            setTimeout(() => interactTest(), 2500);
-            setTimeout(() => toggleStealthTest(), 3500);
-            setTimeout(() => reloadWeaponTest(), 4500);
-            setTimeout(() => completeLevelTest(), 5500);
-            
-            addLog('All tests scheduled. Check logs for results.', 'success');
-        }
-        
-        // ============== GAME ENGINE (Simplified for Testing) ==============
-        class TestGame {
+        // ============== SIMPLIFIED GAME ENGINE ==============
+        class AlienGame {
             constructor() {
                 this.scene = null;
                 this.camera = null;
                 this.renderer = null;
                 this.gameState = {
-                    started: false,
                     level: 1,
                     health: 100,
                     energy: 100,
                     stealth: true,
-                    aliens: 12,
-                    distance: 245,
-                    integrity: 98,
+                    aliens: 8,
+                    distance: 200,
+                    integrity: 85,
                     ammo: 24,
                     maxAmmo: 24,
-                    time: 0
+                    gameStarted: false,
+                    missionTime: 0,
+                    levels: [
+                        { title: "INFILTRATION", aliens: 8, distance: 200, desc: "Enter the alien ship" },
+                        { title: "SABOTAGE", aliens: 12, distance: 150, desc: "Disable systems" },
+                        { title: "COMMAND DECK", aliens: 6, distance: 50, desc: "Reach bridge" },
+                        { title: "ESCAPE", aliens: 4, distance: 0, desc: "Steal ship and flee" }
+                    ]
                 };
+                
+                this.aliens = [];
+                this.bullets = [];
+                this.lastShot = 0;
+                this.shotDelay = 300; // ms
+                
                 this.init();
             }
             
-            init() {
-                addLog('Initializing test game engine...', 'info');
+            async init() {
+                // Update loading screen
+                this.updateLoading("Initializing graphics...", 10);
                 
                 try {
                     // Create scene
                     this.scene = new THREE.Scene();
-                    this.scene.background = new THREE.Color(0x050510);
+                    this.scene.fog = new THREE.Fog(0x000010, 10, 200);
                     
                     // Create camera
                     this.camera = new THREE.PerspectiveCamera(75, 
-                        document.getElementById('gameContainer').offsetWidth / 
-                        document.getElementById('gameContainer').offsetHeight, 
+                        window.innerWidth / window.innerHeight, 
                         0.1, 1000);
-                    this.camera.position.set(0, 5, 10);
+                    this.camera.position.set(0, 2, 5);
                     
-                    // Create renderer
+                    // Create renderer (SIMPLIFIED - no post-processing)
                     const canvas = document.getElementById('gameCanvas');
-                    this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-                    this.renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+                    this.renderer = new THREE.WebGLRenderer({ 
+                        canvas, 
+                        antialias: true,
+                        powerPreference: "high-performance"
+                    });
+                    this.renderer.setSize(window.innerWidth, window.innerHeight);
                     this.renderer.shadowMap.enabled = true;
+                    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
                     
-                    // Add basic lighting
-                    const ambientLight = new THREE.AmbientLight(0x333355);
+                    this.updateLoading("Creating environment...", 30);
+                    
+                    // Simple lighting
+                    const ambientLight = new THREE.AmbientLight(0x333355, 0.6);
                     this.scene.add(ambientLight);
                     
-                    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-                    directionalLight.position.set(10, 20, 5);
-                    directionalLight.castShadow = true;
-                    this.scene.add(directionalLight);
+                    const mainLight = new THREE.DirectionalLight(0xffffff, 0.8);
+                    mainLight.position.set(10, 20, 5);
+                    mainLight.castShadow = true;
+                    this.scene.add(mainLight);
                     
-                    // Create simple test scene
-                    this.createTestScene();
+                    this.updateLoading("Generating ship interior...", 60);
                     
-                    // Start animation loop
+                    // Create simple environment (no complex shaders)
+                    this.createEnvironment();
+                    
+                    this.updateLoading("Creating alien entities...", 80);
+                    
+                    // Create aliens
+                    this.createAliens();
+                    
+                    this.updateLoading("Finalizing systems...", 95);
+                    
+                    // Setup controls
+                    this.setupControls();
+                    
+                    // Start game loop
                     this.animate();
                     
-                    addLog('Game engine initialized successfully', 'success');
-                    return true;
+                    // Hide loading screen
+                    setTimeout(() => {
+                        document.getElementById('loading').style.display = 'none';
+                        this.showMessage("ALIEN SHIP HEIST", "Press BEGIN MISSION to start", true, false, false);
+                    }, 500);
+                    
+                    console.log("Game initialized successfully!");
+                    
                 } catch (error) {
-                    addLog(`Failed to initialize game: ${error.message}`, 'error');
-                    return false;
+                    console.error("Initialization error:", error);
+                    this.updateLoading(`Error: ${error.message}`, 100);
+                    alert("Game initialization failed. Check console for details.");
                 }
             }
             
-            createTestScene() {
-                // Create floor
-                const floorGeometry = new THREE.PlaneGeometry(50, 50);
+            updateLoading(text, percent) {
+                document.getElementById('loading-text').textContent = text;
+                document.getElementById('loading-fill').style.width = `${percent}%`;
+            }
+            
+            createEnvironment() {
+                // Floor
+                const floorGeometry = new THREE.PlaneGeometry(100, 100);
                 const floorMaterial = new THREE.MeshStandardMaterial({ 
-                    color: 0x222244,
-                    metalness: 0.7,
-                    roughness: 0.8
+                    color: 0x1a1a33,
+                    roughness: 0.8,
+                    metalness: 0.3
                 });
                 const floor = new THREE.Mesh(floorGeometry, floorMaterial);
                 floor.rotation.x = -Math.PI / 2;
                 floor.receiveShadow = true;
                 this.scene.add(floor);
                 
-                // Create alien ship (simplified)
-                const shipGeometry = new THREE.ConeGeometry(3, 8, 8);
-                const shipMaterial = new THREE.MeshStandardMaterial({ 
-                    color: 0xaa22ff,
-                    emissive: 0x330066,
-                    metalness: 0.8,
-                    roughness: 0.3
+                // Walls
+                const wallGeometry = new THREE.BoxGeometry(100, 20, 2);
+                const wallMaterial = new THREE.MeshStandardMaterial({ 
+                    color: 0x222244,
+                    roughness: 0.7,
+                    metalness: 0.4
                 });
-                const alienShip = new THREE.Mesh(shipGeometry, shipMaterial);
-                alienShip.position.set(0, 4, 0);
-                alienShip.rotation.x = Math.PI / 2;
-                alienShip.castShadow = true;
-                this.scene.add(alienShip);
                 
-                // Create some test consoles
-                for (let i = 0; i < 4; i++) {
-                    const consoleGeometry = new THREE.BoxGeometry(2, 1, 1);
-                    const consoleMaterial = new THREE.MeshStandardMaterial({ 
-                        color: 0x003322,
-                        emissive: 0x002211
-                    });
+                // Add walls around
+                const walls = [
+                    { pos: [0, 10, -50], rot: 0 },
+                    { pos: [0, 10, 50], rot: 0 },
+                    { pos: [-50, 10, 0], rot: Math.PI/2 },
+                    { pos: [50, 10, 0], rot: Math.PI/2 }
+                ];
+                
+                walls.forEach(wall => {
+                    const wallMesh = new THREE.Mesh(wallGeometry, wallMaterial);
+                    wallMesh.position.set(...wall.pos);
+                    wallMesh.rotation.y = wall.rot;
+                    wallMesh.castShadow = true;
+                    wallMesh.receiveShadow = true;
+                    this.scene.add(wallMesh);
+                });
+                
+                // Alien consoles
+                const consoleGeometry = new THREE.BoxGeometry(4, 2, 1);
+                const consoleMaterial = new THREE.MeshStandardMaterial({ 
+                    color: 0x003322,
+                    emissive: 0x002211,
+                    emissiveIntensity: 0.3
+                });
+                
+                for (let i = 0; i < 8; i++) {
                     const console = new THREE.Mesh(consoleGeometry, consoleMaterial);
                     console.position.set(
-                        (i - 1.5) * 6,
-                        0.5,
-                        10
+                        (Math.random() - 0.5) * 80,
+                        1,
+                        (Math.random() - 0.5) * 80
                     );
                     console.castShadow = true;
                     this.scene.add(console);
+                    
+                    // Add screen
+                    const screenGeometry = new THREE.PlaneGeometry(3.5, 1);
+                    const screenMaterial = new THREE.MeshBasicMaterial({ 
+                        color: 0x00ffaa,
+                        transparent: true,
+                        opacity: 0.6
+                    });
+                    const screen = new THREE.Mesh(screenGeometry, screenMaterial);
+                    screen.position.set(0, 0, 0.6);
+                    console.add(screen);
                 }
                 
-                // Create test aliens
-                for (let i = 0; i < 3; i++) {
-                    this.createTestAlien(i);
-                }
+                // Alien ship in center
+                const shipGeometry = new THREE.ConeGeometry(5, 10, 8);
+                const shipMaterial = new THREE.MeshStandardMaterial({ 
+                    color: 0xaa22ff,
+                    emissive: 0x330066,
+                    emissiveIntensity: 0.5,
+                    roughness: 0.3,
+                    metalness: 0.8
+                });
+                this.alienShip = new THREE.Mesh(shipGeometry, shipMaterial);
+                this.alienShip.position.set(0, 5, 0);
+                this.alienShip.rotation.x = Math.PI / 2;
+                this.alienShip.castShadow = true;
+                this.scene.add(this.alienShip);
+                
+                // Add glow
+                const glowGeometry = new THREE.SphereGeometry(7, 16, 16);
+                const glowMaterial = new THREE.MeshBasicMaterial({ 
+                    color: 0x4400ff,
+                    transparent: true,
+                    opacity: 0.1
+                });
+                const glow = new THREE.Mesh(glowGeometry, glowMaterial);
+                this.alienShip.add(glow);
+                
+                // Add stars in background
+                this.createStars();
             }
             
-            createTestAlien(id) {
+            createStars() {
+                const starCount = 1000;
+                const stars = new THREE.BufferGeometry();
+                const positions = new Float32Array(starCount * 3);
+                
+                for (let i = 0; i < starCount * 3; i += 3) {
+                    positions[i] = (Math.random() - 0.5) * 1000;
+                    positions[i + 1] = (Math.random() - 0.5) * 1000;
+                    positions[i + 2] = (Math.random() - 0.5) * 1000;
+                }
+                
+                stars.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+                
+                const starMaterial = new THREE.PointsMaterial({
+                    color: 0xffffff,
+                    size: 1.5,
+                    sizeAttenuation: true
+                });
+                
+                const starField = new THREE.Points(stars, starMaterial);
+                this.scene.add(starField);
+            }
+            
+            createAliens() {
                 const alienGeometry = new THREE.BoxGeometry(0.8, 2, 0.8);
                 const alienMaterial = new THREE.MeshStandardMaterial({ 
                     color: 0x4a0066,
-                    emissive: 0x220033
+                    emissive: 0x220033,
+                    emissiveIntensity: 0.2
                 });
-                const alien = new THREE.Mesh(alienGeometry, alienMaterial);
-                alien.position.set(
-                    (Math.random() - 0.5) * 20,
-                    1,
-                    (Math.random() - 0.5) * 20
-                );
-                alien.castShadow = true;
-                alien.userData = { id: id, type: 'alien' };
-                this.scene.add(alien);
+                
+                for (let i = 0; i < this.gameState.aliens; i++) {
+                    const alien = new THREE.Mesh(alienGeometry, alienMaterial);
+                    alien.position.set(
+                        (Math.random() - 0.5) * 60,
+                        1,
+                        (Math.random() - 0.5) * 60
+                    );
+                    alien.castShadow = true;
+                    alien.userData = {
+                        id: i,
+                        health: 100,
+                        speed: 0.02 + Math.random() * 0.03,
+                        direction: new THREE.Vector3(
+                            Math.random() - 0.5,
+                            0,
+                            Math.random() - 0.5
+                        ).normalize()
+                    };
+                    
+                    this.scene.add(alien);
+                    this.aliens.push(alien);
+                }
+            }
+            
+            setupControls() {
+                // Movement flags
+                this.move = {
+                    forward: false,
+                    backward: false,
+                    left: false,
+                    right: false
+                };
+                
+                // Mouse look
+                this.mouse = {
+                    x: 0,
+                    y: 0,
+                    sensitivity: 0.002
+                };
+                
+                // Event listeners
+                document.addEventListener('keydown', (e) => this.onKeyDown(e));
+                document.addEventListener('keyup', (e) => this.onKeyUp(e));
+                document.addEventListener('mousedown', (e) => this.onMouseDown(e));
+                document.addEventListener('mousemove', (e) => this.onMouseMove(e));
+                
+                // UI buttons
+                document.getElementById('start-btn').addEventListener('click', () => this.startGame());
+                document.getElementById('continue-btn').addEventListener('click', () => this.continueGame());
+                document.getElementById('next-btn').addEventListener('click', () => this.nextLevel());
+                
+                // Window resize
+                window.addEventListener('resize', () => this.onResize());
+                
+                // Lock pointer on click
+                document.getElementById('gameCanvas').addEventListener('click', () => {
+                    this.lockPointer();
+                });
+            }
+            
+            lockPointer() {
+                const canvas = document.getElementById('gameCanvas');
+                if (canvas.requestPointerLock) {
+                    canvas.requestPointerLock();
+                }
+            }
+            
+            onKeyDown(e) {
+                if (!this.gameState.gameStarted) return;
+                
+                switch(e.key.toLowerCase()) {
+                    case 'w': this.move.forward = true; break;
+                    case 's': this.move.backward = true; break;
+                    case 'a': this.move.left = true; break;
+                    case 'd': this.move.right = true; break;
+                    case 'shift': this.toggleStealth(); break;
+                    case 'e': this.interact(); break;
+                    case 'r': this.reload(); break;
+                    case ' ': this.jump(); break;
+                }
+            }
+            
+            onKeyUp(e) {
+                switch(e.key.toLowerCase()) {
+                    case 'w': this.move.forward = false; break;
+                    case 's': this.move.backward = false; break;
+                    case 'a': this.move.left = false; break;
+                    case 'd': this.move.right = false; break;
+                }
+            }
+            
+            onMouseDown(e) {
+                if (!this.gameState.gameStarted) return;
+                
+                if (e.button === 0) { // Left click
+                    this.fireWeapon();
+                }
+            }
+            
+            onMouseMove(e) {
+                if (!document.pointerLockElement) return;
+                
+                this.mouse.x += e.movementX * this.mouse.sensitivity;
+                this.mouse.y += e.movementY * this.mouse.sensitivity;
+                
+                // Clamp vertical look
+                this.mouse.y = Math.max(-Math.PI/2, Math.min(Math.PI/2, this.mouse.y));
+            }
+            
+            onResize() {
+                this.camera.aspect = window.innerWidth / window.innerHeight;
+                this.camera.updateProjectionMatrix();
+                this.renderer.setSize(window.innerWidth, window.innerHeight);
             }
             
             animate() {
                 requestAnimationFrame(() => this.animate());
                 
-                // Rotate alien ship
-                const alienShip = this.scene.children.find(child => 
-                    child.geometry && child.geometry.type === 'ConeGeometry'
-                );
-                if (alienShip) {
-                    alienShip.rotation.z += 0.01;
-                }
+                // Update game time
+                this.gameState.missionTime += 0.016;
                 
-                // Update FPS counter
-                frameCount++;
-                const currentTime = performance.now();
-                if (currentTime >= lastTime + 1000) {
-                    fps = Math.round((frameCount * 1000) / (currentTime - lastTime));
-                    frameCount = 0;
-                    lastTime = currentTime;
+                // Update camera rotation from mouse
+                if (this.camera) {
+                    this.camera.rotation.order = 'YXZ';
+                    this.camera.rotation.y = -this.mouse.x;
+                    this.camera.rotation.x = -this.mouse.y;
                     
-                    document.getElementById('fpsCounter').textContent = fps;
-                    document.getElementById('fpsCounter').className = fps < 30 ? 'check-fail' : 'check-pass';
+                    // Simple movement
+                    const speed = 0.1;
+                    const dir = new THREE.Vector3();
+                    
+                    if (this.move.forward) dir.z -= speed;
+                    if (this.move.backward) dir.z += speed;
+                    if (this.move.left) dir.x -= speed;
+                    if (this.move.right) dir.x += speed;
+                    
+                    // Apply movement relative to camera direction
+                    dir.applyEuler(this.camera.rotation);
+                    this.camera.position.add(dir);
+                    
+                    // Keep camera above ground
+                    this.camera.position.y = Math.max(1, this.camera.position.y);
                 }
                 
-                // Update game time if started
-                if (this.gameState.started) {
-                    this.gameState.time += 0.016; // Approximate delta time
+                // Update alien ship rotation
+                if (this.alienShip) {
+                    this.alienShip.rotation.z += 0.01;
                 }
                 
-                // Render scene
-                const renderStart = performance.now();
-                this.renderer.render(this.scene, this.camera);
-                const renderEnd = performance.now();
+                // Update aliens
+                this.updateAliens();
                 
-                document.getElementById('renderTime').textContent = `${(renderEnd - renderStart).toFixed(2)}ms`;
+                // Update bullets
+                this.updateBullets();
+                
+                // Update radar
+                this.updateRadar();
+                
+                // Render
+                if (this.renderer && this.scene && this.camera) {
+                    this.renderer.render(this.scene, this.camera);
+                }
             }
             
-            startGame() {
-                if (!this.gameState.started) {
-                    this.gameState.started = true;
-                    addLog('Game started successfully', 'success');
-                    return true;
+            updateAliens() {
+                this.aliens.forEach((alien, index) => {
+                    if (!alien.userData) return;
+                    
+                    // Move alien
+                    alien.position.add(alien.userData.direction.clone().multiplyScalar(alien.userData.speed));
+                    
+                    // Bounce off walls
+                    if (Math.abs(alien.position.x) > 45 || Math.abs(alien.position.z) > 45) {
+                        alien.userData.direction.x *= -1;
+                        alien.userData.direction.z *= -1;
+                    }
+                    
+                    // Face movement direction
+                    alien.lookAt(alien.position.clone().add(alien.userData.direction));
+                    
+                    // Gentle bounce
+                    alien.position.y = 1 + Math.sin(this.gameState.missionTime * 2 + index) * 0.1;
+                });
+            }
+            
+            updateBullets() {
+                for (let i = this.bullets.length - 1; i >= 0; i--) {
+                    const bullet = this.bullets[i];
+                    bullet.position.add(bullet.userData.velocity);
+                    
+                    // Check collision with aliens
+                    for (let j = this.aliens.length - 1; j >= 0; j--) {
+                        const alien = this.aliens[j];
+                        if (bullet.position.distanceTo(alien.position) < 1.5) {
+                            // Hit alien
+                            this.scene.remove(bullet);
+                            this.bullets.splice(i, 1);
+                            
+                            this.scene.remove(alien);
+                            this.aliens.splice(j, 1);
+                            this.gameState.aliens--;
+                            
+                            this.addLog(`Alien eliminated! ${this.gameState.aliens} remaining`);
+                            break;
+                        }
+                    }
+                    
+                    // Remove if too far
+                    if (bullet.position.length() > 100) {
+                        this.scene.remove(bullet);
+                        this.bullets.splice(i, 1);
+                    }
                 }
-                return false;
+            }
+            
+            updateRadar() {
+                const radar = document.getElementById('radar');
+                const ctx = radar.getContext('2d');
+                
+                // Clear
+                ctx.clearRect(0, 0, 150, 150);
+                
+                // Draw circle
+                ctx.beginPath();
+                ctx.arc(75, 75, 70, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(5, 15, 35, 0.9)';
+                ctx.fill();
+                ctx.strokeStyle = 'rgba(0, 200, 255, 0.5)';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                // Draw player (center)
+                ctx.beginPath();
+                ctx.arc(75, 75, 4, 0, Math.PI * 2);
+                ctx.fillStyle = '#00ff00';
+                ctx.fill();
+                
+                // Draw aliens
+                ctx.fillStyle = '#ff0000';
+                this.aliens.forEach(alien => {
+                    // Simplified radar positioning
+                    const x = 75 + (alien.position.x / 100) * 70;
+                    const y = 75 + (alien.position.z / 100) * 70;
+                    
+                    if (x > 5 && x < 145 && y > 5 && y < 145) {
+                        ctx.beginPath();
+                        ctx.arc(x, y, 3, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                });
+                
+                // Draw alien ship
+                ctx.fillStyle = '#aa22ff';
+                ctx.beginPath();
+                ctx.arc(75, 25, 5, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Draw sweep line
+                const sweepAngle = (this.gameState.missionTime * 2) % (Math.PI * 2);
+                ctx.strokeStyle = 'rgba(0, 255, 255, 0.6)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(75, 75);
+                ctx.lineTo(75 + Math.cos(sweepAngle) * 70, 75 + Math.sin(sweepAngle) * 70);
+                ctx.stroke();
+            }
+            
+            // ============== GAME ACTIONS ==============
+            
+            startGame() {
+                this.gameState.gameStarted = true;
+                document.getElementById('message-overlay').classList.add('hidden');
+                this.addLog("Mission started. Good luck!");
+                
+                // Start game simulation
+                this.startSimulation();
+            }
+            
+            startSimulation() {
+                // Simulate gameplay events
+                setInterval(() => {
+                    if (!this.gameState.gameStarted) return;
+                    
+                    // Random events
+                    if (Math.random() < 0.02 && this.gameState.aliens > 0) {
+                        if (!this.gameState.stealth) {
+                            this.gameState.health = Math.max(0, this.gameState.health - 5);
+                            this.addLog("Taking fire! Health decreased.");
+                        }
+                    }
+                    
+                    // Reduce distance over time
+                    if (Math.random() < 0.05 && this.gameState.distance > 0) {
+                        this.gameState.distance = Math.max(0, this.gameState.distance - 5);
+                    }
+                    
+                    // Check level completion
+                    if (this.gameState.aliens <= 0 && this.gameState.distance <= 10) {
+                        this.completeLevel();
+                    }
+                    
+                    // Update UI
+                    this.updateUI();
+                    
+                }, 1000);
+            }
+            
+            updateUI() {
+                document.getElementById('health-value').textContent = `${this.gameState.health}%`;
+                document.getElementById('health-bar').style.width = `${this.gameState.health}%`;
+                
+                document.getElementById('energy-value').textContent = `${this.gameState.energy}%`;
+                document.getElementById('energy-bar').style.width = `${this.gameState.energy}%`;
+                
+                document.getElementById('stealth-value').textContent = this.gameState.stealth ? 'ACTIVE' : 'INACTIVE';
+                document.getElementById('stealth-value').style.color = this.gameState.stealth ? '#00ff00' : '#ff0000';
+                
+                document.getElementById('alien-count').textContent = this.gameState.aliens;
+                document.getElementById('distance-value').textContent = `${this.gameState.distance}m`;
+                document.getElementById('integrity-value').textContent = `${this.gameState.integrity}%`;
+                document.getElementById('integrity-bar').style.width = `${this.gameState.integrity}%`;
+                document.getElementById('ammo-value').textContent = `${this.gameState.ammo}/${this.gameState.maxAmmo}`;
             }
             
             fireWeapon() {
-                if (this.gameState.ammo > 0) {
-                    this.gameState.ammo--;
-                    
-                    // Simulate hit
-                    if (Math.random() > 0.4 && this.gameState.aliens > 0) {
-                        this.gameState.aliens--;
+                const now = Date.now();
+                if (now - this.lastShot < this.shotDelay || this.gameState.ammo <= 0) return;
+                
+                this.lastShot = now;
+                this.gameState.ammo--;
+                
+                // Create bullet
+                const bulletGeometry = new THREE.SphereGeometry(0.1, 8, 8);
+                const bulletMaterial = new THREE.MeshBasicMaterial({ color: 0x00ffff });
+                const bullet = new THREE.Mesh(bulletGeometry, bulletMaterial);
+                
+                // Position at camera
+                bullet.position.copy(this.camera.position);
+                
+                // Direction camera is facing
+                const direction = new THREE.Vector3(0, 0, -1);
+                direction.applyQuaternion(this.camera.quaternion);
+                direction.multiplyScalar(0.5); // Speed
+                
+                bullet.userData = { velocity: direction };
+                this.scene.add(bullet);
+                this.bullets.push(bullet);
+                
+                this.addLog(`Weapon fired. Ammo: ${this.gameState.ammo}/${this.gameState.maxAmmo}`);
+                
+                // Remove after 2 seconds
+                setTimeout(() => {
+                    const index = this.bullets.indexOf(bullet);
+                    if (index > -1) {
+                        this.scene.remove(bullet);
+                        this.bullets.splice(index, 1);
                     }
-                    
-                    addLog(`Weapon fired. Ammo: ${this.gameState.ammo}/${this.gameState.maxAmmo}. Aliens: ${this.gameState.aliens}`, 'info');
-                    return true;
-                } else {
-                    addLog('Out of ammo!', 'warning');
-                    return false;
-                }
+                }, 2000);
             }
             
-            reloadWeapon() {
+            reload() {
                 if (this.gameState.ammo < this.gameState.maxAmmo) {
                     this.gameState.ammo = this.gameState.maxAmmo;
-                    addLog('Weapon reloaded', 'success');
-                    return true;
+                    this.addLog("Weapon reloaded");
                 }
-                return false;
             }
             
             toggleStealth() {
                 this.gameState.stealth = !this.gameState.stealth;
-                addLog(`Stealth ${this.gameState.stealth ? 'activated' : 'deactivated'}`, 'info');
-                return this.gameState.stealth;
+                this.addLog(`Stealth ${this.gameState.stealth ? 'activated' : 'deactivated'}`);
             }
             
             interact() {
-                const actions = [
-                    "Security system hacked",
-                    "Navigation data downloaded", 
-                    "Door opened",
-                    "Console accessed",
-                    "Alien device disabled"
-                ];
-                const action = actions[Math.floor(Math.random() * actions.length)];
-                
-                // Reduce distance to bridge
-                this.gameState.distance = Math.max(10, this.gameState.distance - 15);
-                
-                addLog(`Interaction: ${action}. Distance to bridge: ${this.gameState.distance}m`, 'success');
-                return action;
+                // Check if near alien ship
+                const distanceToShip = this.camera.position.distanceTo(this.alienShip.position);
+                if (distanceToShip < 15) {
+                    this.gameState.distance = Math.max(0, this.gameState.distance - 20);
+                    this.addLog("Accessing alien ship systems...");
+                } else {
+                    this.addLog("Nothing to interact with here");
+                }
             }
             
-            damagePlayer(amount = 20) {
-                this.gameState.health = Math.max(0, this.gameState.health - amount);
-                addLog(`Player damaged: -${amount} HP. Health: ${this.gameState.health}%`, 
-                    this.gameState.health <= 30 ? 'warning' : 'info');
-                return this.gameState.health;
-            }
-            
-            healPlayer(amount = 30) {
-                this.gameState.health = Math.min(100, this.gameState.health + amount);
-                addLog(`Player healed: +${amount} HP. Health: ${this.gameState.health}%`, 'success');
-                return this.gameState.health;
+            jump() {
+                // Simple jump
+                if (this.camera.position.y < 2) {
+                    this.camera.position.y += 2;
+                    setTimeout(() => {
+                        this.camera.position.y = Math.max(1, this.camera.position.y - 2);
+                    }, 300);
+                }
             }
             
             completeLevel() {
+                const currentLevel = this.gameState.level;
+                
+                if (currentLevel < 4) {
+                    this.showMessage(
+                        `LEVEL ${currentLevel} COMPLETE`,
+                        `Prepare for next phase: ${this.gameState.levels[currentLevel].title}`,
+                        false, false, true
+                    );
+                } else {
+                    this.showMessage(
+                        "MISSION ACCOMPLISHED!",
+                        "You have stolen the alien ship and are returning to Earth.",
+                        false, true, false
+                    );
+                }
+            }
+            
+            nextLevel() {
                 if (this.gameState.level < 4) {
                     this.gameState.level++;
-                    this.gameState.aliens = [12, 18, 24, 8][this.gameState.level - 1];
-                    this.gameState.distance = [245, 180, 120, 40][this.gameState.level - 1];
+                    const level = this.gameState.levels[this.gameState.level - 1];
                     
-                    // Partial heal
-                    this.gameState.health = Math.min(100, this.gameState.health + 25);
+                    // Reset level stats
+                    this.gameState.aliens = level.aliens;
+                    this.gameState.distance = level.distance;
+                    
+                    // Heal player
+                    this.gameState.health = Math.min(100, this.gameState.health + 30);
                     this.gameState.energy = Math.min(100, this.gameState.energy + 40);
                     
-                    addLog(`Level ${this.gameState.level - 1} completed! Starting level ${this.gameState.level}`, 'success');
-                    return this.gameState.level;
-                } else {
-                    addLog('All levels completed! Mission accomplished!', 'success');
-                    return 'complete';
+                    // Remove old aliens
+                    this.aliens.forEach(alien => this.scene.remove(alien));
+                    this.aliens = [];
+                    
+                    // Create new aliens
+                    this.createAliens();
+                    
+                    this.addLog(`Starting ${level.title}: ${level.desc}`);
+                    document.getElementById('message-overlay').classList.add('hidden');
                 }
             }
             
-            addAlien() {
-                this.gameState.aliens++;
-                this.createTestAlien(this.gameState.aliens);
-                addLog(`Alien added. Total: ${this.gameState.aliens}`, 'info');
-                return this.gameState.aliens;
-            }
-            
-            removeAlien() {
-                if (this.gameState.aliens > 0) {
-                    this.gameState.aliens--;
-                    
-                    // Remove from scene (simplified)
-                    const aliens = this.scene.children.filter(child => 
-                        child.userData && child.userData.type === 'alien'
-                    );
-                    if (aliens.length > 0) {
-                        this.scene.remove(aliens[0]);
-                    }
-                    
-                    addLog(`Alien removed. Total: ${this.gameState.aliens}`, 'info');
-                    return this.gameState.aliens;
-                }
-                return 0;
-            }
-            
-            getStatus() {
-                return {
-                    ...this.gameState,
-                    fps: fps
-                };
-            }
-        }
-        
-        // ============== TEST FUNCTIONS ==============
-        function initializeGame() {
-            if (!gameInstance) {
-                gameInstance = new TestGame();
-                addLog('Game instance created', 'success');
+            continueGame() {
+                // Restart current level
+                const level = this.gameState.levels[this.gameState.level - 1];
                 
-                // Setup event listeners for testing
-                setupTestControls();
+                this.gameState.health = 100;
+                this.gameState.energy = 100;
+                this.gameState.ammo = this.gameState.maxAmmo;
+                this.gameState.aliens = level.aliens;
+                this.gameState.distance = level.distance;
                 
-                // Start performance monitoring
-                startPerformanceMonitor();
+                // Remove old aliens
+                this.aliens.forEach(alien => this.scene.remove(alien));
+                this.aliens = [];
                 
-                return gameInstance;
-            }
-            return gameInstance;
-        }
-        
-        function setupTestControls() {
-            // Keyboard controls for testing
-            document.addEventListener('keydown', (e) => {
-                if (!gameInstance) return;
+                // Create new aliens
+                this.createAliens();
                 
-                switch(e.key.toLowerCase()) {
-                    case 'e':
-                        interactTest();
-                        break;
-                    case 'r':
-                        reloadWeaponTest();
-                        break;
-                    case ' ':
-                        fireWeaponTest();
-                        break;
-                    case 'shift':
-                        toggleStealthTest();
-                        break;
-                }
-            });
-            
-            // Mouse controls
-            document.getElementById('gameCanvas').addEventListener('click', () => {
-                addLog('Canvas clicked - mouse controls active', 'info');
-            });
-            
-            addLog('Test controls initialized', 'success');
-        }
-        
-        function startPerformanceMonitor() {
-            setInterval(() => {
-                if (gameInstance) {
-                    const status = gameInstance.getStatus();
-                    
-                    // Update UI with game state
-                    updateStatusDisplay(status);
-                    
-                    // Check memory (simulated)
-                    if (performance.memory) {
-                        const usedMB = Math.round(performance.memory.usedJSHeapSize / 1048576);
-                        const totalMB = Math.round(performance.memory.totalJSHeapSize / 1048576);
-                        document.getElementById('memoryCounter').textContent = `${usedMB}/${totalMB} MB`;
-                        document.getElementById('memoryCounter').className = 
-                            usedMB > totalMB * 0.8 ? 'check-fail' : 'check-pass';
-                    }
-                }
-            }, 1000);
-        }
-        
-        function updateStatusDisplay(status) {
-            // Create or update status overlay
-            let overlay = document.getElementById('gameOverlay');
-            if (!overlay) {
-                overlay = document.createElement('div');
-                overlay.id = 'gameOverlay';
-                overlay.style.cssText = `
-                    position: absolute;
-                    top: 20px;
-                    left: 20px;
-                    background: rgba(0, 0, 0, 0.7);
-                    color: white;
-                    padding: 15px;
-                    border-radius: 8px;
-                    font-family: monospace;
-                    font-size: 14px;
-                    pointer-events: none;
-                    z-index: 100;
-                `;
-                document.getElementById('gameContainer').appendChild(overlay);
+                this.addLog("Mission restarted");
+                document.getElementById('message-overlay').classList.add('hidden');
             }
             
-            overlay.innerHTML = `
-                <div style="margin-bottom: 5px;"><strong>TEST MODE ACTIVE</strong></div>
-                <div>Level: ${status.level}</div>
-                <div>Health: ${status.health}%</div>
-                <div>Energy: ${status.energy}%</div>
-                <div>Aliens: ${status.aliens}</div>
-                <div>Distance: ${status.distance}m</div>
-                <div>Ammo: ${status.ammo}/${status.maxAmmo}</div>
-                <div>Stealth: ${status.stealth ? 'ON' : 'OFF'}</div>
-                <div>FPS: ${status.fps}</div>
-            `;
-        }
-        
-        // Test functions
-        function startGameTest() {
-            if (!gameInstance) {
-                gameInstance = initializeGame();
+            showMessage(title, text, showStart, showContinue, showNext) {
+                document.getElementById('message-title').textContent = title;
+                document.getElementById('message-text').textContent = text;
+                
+                document.getElementById('start-btn').classList.toggle('hidden', !showStart);
+                document.getElementById('continue-btn').classList.toggle('hidden', !showContinue);
+                document.getElementById('next-btn').classList.toggle('hidden', !showNext);
+                
+                document.getElementById('message-overlay').classList.remove('hidden');
             }
             
-            if (gameInstance.startGame()) {
-                addLog('Game start test: PASSED', 'success');
-            } else {
-                addLog('Game start test: FAILED (already started)', 'warning');
+            addLog(message) {
+                console.log(`[GAME] ${message}`);
             }
         }
         
-        function fireWeaponTest() {
-            if (!gameInstance) {
-                addLog('Game not initialized. Click START GAME first.', 'error');
-                return;
-            }
-            
-            if (gameInstance.fireWeapon()) {
-                addLog('Weapon fire test: PASSED', 'success');
-            } else {
-                addLog('Weapon fire test: FAILED (out of ammo)', 'warning');
-            }
+        // ============== START THE GAME ==============
+        window.addEventListener('load', () => {
+            console.log("Starting Alien Ship Heist game...");
+            const game = new AlienGame();
+            window.game = game; // Make accessible in console for debugging
+        });
+        
+        // Make testing functions available
+        function testFire() {
+            if (window.game) window.game.fireWeapon();
         }
         
-        function reloadWeaponTest() {
-            if (!gameInstance) {
-                addLog('Game not initialized. Click START GAME first.', 'error');
-                return;
-            }
-            
-            if (gameInstance.reloadWeapon()) {
-                addLog('Reload test: PASSED', 'success');
-            } else {
-                addLog('Reload test: ALREADY FULL', 'info');
-            }
+        function testReload() {
+            if (window.game) window.game.reload();
         }
         
-        function toggleStealthTest() {
-            if (!gameInstance) {
-                addLog('Game not initialized. Click START GAME first.', 'error');
-                return;
-            }
-            
-            const newState = gameInstance.toggleStealth();
-            addLog(`Stealth toggle test: ${newState ? 'STEALTH ON' : 'STEALTH OFF'}`, 'success');
+        function testStealth() {
+            if (window.game) window.game.toggleStealth();
         }
         
-        function interactTest() {
-            if (!gameInstance) {
-                addLog('Game not initialized. Click START GAME first.', 'error');
-                return;
-            }
-            
-            const result = gameInstance.interact();
-            addLog(`Interaction test: ${result}`, 'success');
+        function testComplete() {
+            if (window.game) window.game.completeLevel();
         }
-        
-        function damagePlayerTest() {
-            if (!gameInstance) {
-                addLog('Game not initialized. Click START GAME first.', 'error');
-                return;
-            }
-            
-            const health = gameInstance.damagePlayer(20);
-            addLog(`Damage test: Player health now ${health}%`, 
-                health <= 30 ? 'warning' : 'success');
-        }
-        
-        function healPlayerTest() {
-            if (!gameInstance) {
-                addLog('Game not initialized. Click START GAME first.', 'error');
-                return;
-            }
-            
-            const health = gameInstance.healPlayer(30);
-            addLog(`Heal test: Player health now ${health}%`, 'success');
-        }
-        
-        function simulateCombatTest() {
-            if (!gameInstance) {
-                addLog('Game not initialized. Click START GAME first.', 'error');
-                return;
-            }
-            
-            addLog('=== COMBAT SIMULATION START ===', 'warning');
-            
-            // Simulate combat sequence
-            gameInstance.fireWeapon();
-            gameInstance.fireWeapon();
-            gameInstance.damagePlayer(15);
-            gameInstance.reloadWeapon();
-            gameInstance.fireWeapon();
-            
-            addLog('=== COMBAT SIMULATION COMPLETE ===', 'success');
-        }
-        
-        function completeLevelTest() {
-            if (!gameInstance) {
-                addLog('Game not initialized. Click START GAME first.', 'error');
-                return;
-            }
-            
-            const result = gameInstance.completeLevel();
-            if (result === 'complete') {
-                addLog('LEVEL COMPLETE TEST: MISSION ACCOMPLISHED!', 'success');
-            } else {
-                addLog(`Level complete test: Now on level ${result}`, 'success');
-            }
-        }
-        
-        function addAlienTest() {
-            if (!gameInstance) {
-                addLog('Game not initialized. Click START GAME first.', 'error');
-                return;
-            }
-            
-            const count = gameInstance.addAlien();
-            addLog(`Add alien test: ${count} aliens total`, 'success');
-        }
-        
-        function removeAlienTest() {
-            if (!gameInstance) {
-                addLog('Game not initialized. Click START GAME first.', 'error');
-                return;
-            }
-            
-            const count = gameInstance.removeAlien();
-            addLog(`Remove alien test: ${count} aliens remaining`, 'success');
-        }
-        
-        function nextLevelTest() {
-            completeLevelTest();
-        }
-        
-        function failMissionTest() {
-            if (!gameInstance) {
-                addLog('Game not initialized. Click START GAME first.', 'error');
-                return;
-            }
-            
-            gameInstance.damagePlayer(100);
-            addLog('MISSION FAILED TEST: Player eliminated', 'error');
-        }
-        
-        function resetGameTest() {
-            gameInstance = null;
-            
-            // Clear canvas
-            const canvas = document.getElementById('gameCanvas');
-            const ctx = canvas.getContext('2d');
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // Remove overlay
-            const overlay = document.getElementById('gameOverlay');
-            if (overlay) overlay.remove();
-            
-            // Reset Three.js
-            if (window.THREE) {
-                // Clean up Three.js resources if needed
-            }
-            
-            addLog('Game reset complete. Click START GAME to begin new test.', 'warning');
-        }
-        
-        // ============== BROWSER COMPATIBILITY CHECK ==============
-        function checkBrowserCompatibility() {
-            addLog('Checking browser compatibility...', 'info');
-            
-            const checks = {
-                'WebGL': () => {
-                    try {
-                        const canvas = document.createElement('canvas');
-                        return !!(window.WebGLRenderingContext && 
-                                 (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')));
-                    } catch (e) {
-                        return false;
-                    }
-                },
-                'Three.js': () => typeof THREE !== 'undefined',
-                'Canvas': () => {
-                    const canvas = document.createElement('canvas');
-                    return !!(canvas.getContext && canvas.getContext('2d'));
-                },
-                'JavaScript': () => {
-                    try {
-                        return !!(window.Promise && window.Map && window.Set && window.Array.from);
-                    } catch (e) {
-                        return false;
+    </script>
+</body>
+</html>
